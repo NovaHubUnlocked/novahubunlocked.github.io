@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Yohoho.io</title>
+<style>
+body{
+    margin:0;
+    background:#1f1f1f;
+    font-family:Arial, Helvetica, sans-serif;
+    color:white;
+    overflow:hidden;
+}
+
+.header{
+    padding:15px;
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    color:white;
+    text-shadow:0 0 15px white;
+    background:#111;
+}
+
+/* fullscreen button */
+#fullscreen-btn{
+    position:absolute;
+    top:20px;
+    right:20px;
+    padding:10px 15px;
+    background:white;
+    color:black;
+    font-weight:bold;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    z-index:10;
+}
+
+.game-area{
+    width:100%;
+    height:calc(100vh - 60px);
+}
+
+iframe{
+    width:100%;
+    height:100%;
+    border:none;
+    border-radius:8px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">Yohoho.io</div>
+<button id="fullscreen-btn">Fullscreen</button>
+
+<div class="game-area">
+    <iframe 
+        <div id="homepage-content" class="content">
+                    <div class="left-box">
+                        <div class="inside">
+                            <div class="box" id="vidx">
+                                <div class="title">How to Play</div>
+                                <div>Collect golds to get bigger</div>
+                                <div>Kill others to collect their golds</div>
+                                <div class="title2">Controls</div>
+                                <div id="desktop-controls">
+                                    <div>Mouse: move cursor, click to attack</div>
+                                    <div>Keyboard: WASD, arrows move and SPACE to attack</div>
+                                </div>
+                                <div id="mobile-controls" style="display: none;">Mobile:drag with one finger, tap with second finger to attack</div>
+                                <div class="bolder">Keep attack pressed longer to focus and make a special dash attack</div>
+								<div class="subtitle2"> </div>
+					
+ 
+					   </div>
+                            
+							
+					
+					
+					
+                        </div>
+						
+						<div class="scoreboard">
+<table>
+<tbody><tr><th>Records</th>
+<th>Last</th>
+<th>Best</th>
+<th>Total</th>
+</tr><tr>
+<td>Kills</td>
+<td id="last-kills">0</td>
+<td id="best-kills">0</td>
+<td id="total-kills">0</td>
+</tr>
+<tr>
+<td>Loot</td>
+<td id="last-score">0</td>
+<td id="best-score">0</td>
+<td id="total-score">0</td>
+</tr>
+<tr>
+<td>Time survived</td>
+<td id="last-game-time">0s</td>
+<td id="best-game-time">0s</td>
+<td id="total-game-time">0s</td>
+</tr>
+</tbody></table>
+</div>
+
+                    </div>
+                    <div class="middle-box">
+                        <div class="inside">
+                            <div id="homepage-loading" style="display: none;">
+                                <div class="spinner black">
+                                    <div></div>
+                                </div> Loading...
+                            </div>
+                            
+                        <div id="homepage-loaded" style="display: block;">
+                                <div class="info">
+                                    <div class="level">Island:<br><span id="homepage-league">Tortuga</span></div>
+                                    <div class="booty"><span id="homepage-booty">0</span> <img src="https://yohoho4.com/img/coins_m.png"></div>
+                                </div>
+
+                                <input type="text" id="username" placeholder="Enter your pirate name..." maxlength="16">
+
+                                <div class="buttons">
+                                                    <button id="play-button" type="button" class="red button animated pulse" onclick="if (!window.__cfRLUnblockHandlers) return false; makecloak();" style="display: block;">Play</button>
+									
+                                    <div>
+                                        <button id="play-spinner" type="button" class="red button" disabled="" style="display: none;">
+                                            <div class="spinner">
+                                                <div></div>
+                                            </div>
+                                        </button></div>
+                                </div>
+
+                                <div id="skin-block" class="skin">
+                                    <div id="skin-homepage-canvas"><div style="position: relative; display: inline-block; width: 68px; height: 68px;"><img src="data:image/png;base64,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" style="position: absolute; width: 23px; height: 87px; transform-origin: 51.3043% 11.4754% 0px; transform: rotate(5.49779rad) scaleX(-1); left: 22.8633px; top: 51.2532px;"><img src="data:image/png;base64,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" style="position: absolute; left: 3.4px; top: 3.4px; width: 54px; height: 61px;"></div></div>
+                                    <div>
+                                        <button id="skin-button" type="button" class="black button" onclick="if (!window.__cfRLUnblockHandlers) return false; yohoho.chooseSkin();"> Characters<span id="new-skin-avail" class="new" style="display: none;"><span class="pulse-ring"></span><span class="text">NEW</span></span></button>
+                                    </div>
+                                </div>
+								
+								<div class="adim1">
+								asd
+								</div>
+								
+
+                                <div class="ipad-help">
+                                    <div class="title">Controls</div>
+                                    <div>Drag with one finger, tap with second finger to attack</div>
+                                    <div class="bolder">Keep second finger pressed longer to focus and make a special dash attack</div>
+                                </div>
+
+
+                            </div></div>
+                    </div>
+                    <div class="right-box">
+                        <div class="inside">
+                            <div id="banner-on-homepage" class="right-pub">
+                                
+								
+								<div class="adim2">
+<!-- /21794794780/160X600 -->
+<div id="div-gpt-ad-1662970737169-0" style="min-width: 160px; min-height: 600px;"><iframe id="google_ads_iframe_/21794794780/160X600_1" srcdoc="&lt;body&gt;&lt;/body&gt;" style="position: absolute; width: 0px; height: 0px; left: 0px; right: 0px; z-index: -1; border: 0px;" width="0" height="0" data-load-complete="true" data-google-container-id="true" sandbox=""></iframe></div>
+</div>
+
+                             
+                            </div>
+                        </div>
+                    </div>
+          
+                    <div id="no-webgl-popup">Your browser does not support WebGL, the game will suffer display and performance issues. <a href="help.html">Please read the help for further advice</a></div>
+                </div>
+    </iframe>
+</div>
+
+<script>
+const btn=document.getElementById("fullscreen-btn");
+const iframe=document.querySelector("iframe");
+
+btn.addEventListener("click",()=>{
+    if(iframe.requestFullscreen){
+        iframe.requestFullscreen();
+    } else if(iframe.webkitRequestFullscreen){
+        iframe.webkitRequestFullscreen();
+    } else if(iframe.mozRequestFullScreen){
+        iframe.mozRequestFullScreen();
+    }
+});
+</script>
+
+</body>
+</html>
