@@ -1,41 +1,178 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>NovaHub</title>
-    <style>
-        body {
-            background:#0f172a;
-            color:white;
-            font-family:Arial;
-            text-align:center;
-        }
-        .game {
-            background:#1e293b;
-            padding:15px;
-            margin:15px;
-            border-radius:12px;
-            display:inline-block;
-            width:220px;
-        }
-        a {
-            color:#38bdf8;
-            text-decoration:none;
-            font-size:18px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>NovaHub</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:#2b2b2b;
+    font-family:Arial, Helvetica, sans-serif;
+    color:white;
+}
+
+/* canvas background */
+canvas{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:-1;
+}
+
+/* center login box */
+.container{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    text-align:center;
+}
+
+/* glowing title */
+h1{
+    font-size:60px;
+    font-weight:bold;
+    color:white;
+    text-shadow:
+        0 0 10px white,
+        0 0 20px white,
+        0 0 40px white;
+    margin-bottom:30px;
+}
+
+/* password box */
+input{
+    background:transparent;
+    border:2px solid white;
+    border-radius:14px;
+    padding:15px 20px;
+    width:260px;
+    font-size:20px;
+    color:white;
+    outline:none;
+    text-align:center;
+}
+
+/* placeholder color */
+::placeholder{
+    color:#cccccc;
+}
+
+/* wrong password shake */
+.shake{
+    animation:shake 0.3s;
+}
+@keyframes shake{
+    0%{transform:translateX(0)}
+    25%{transform:translateX(-5px)}
+    50%{transform:translateX(5px)}
+    75%{transform:translateX(-5px)}
+    100%{transform:translateX(0)}
+}
+</style>
 </head>
+
 <body>
 
-<h1>🎮 NovaHub</h1>
-<p>Browser games collection</p>
+<canvas id="bg"></canvas>
 
-<div class="game">
-    <a href="games/tetris.html">Play Tetris</a>
+<div class="container">
+    <h1>Enter Password</h1>
+    <input id="pass" type="password" placeholder="Enter Password">
 </div>
 
-<div class="game">
-    <a href="games/pong.html">Play Pong</a>
-</div>
+<script>
+/* ================= PASSWORD ================= */
+const input=document.getElementById("pass");
+
+input.addEventListener("keydown",function(e){
+    if(e.key==="Enter"){
+        if(input.value==="dihdihdih"){
+            window.location.href="home.html";
+        }else{
+            input.classList.add("shake");
+            setTimeout(()=>input.classList.remove("shake"),300);
+            input.value="";
+        }
+    }
+});
+
+/* ================= PARTICLE BACKGROUND ================= */
+const canvas=document.getElementById("bg");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let mouse={x:0,y:0};
+
+window.addEventListener("mousemove",e=>{
+    mouse.x=e.x;
+    mouse.y=e.y;
+});
+
+class Particle{
+    constructor(){
+        this.x=Math.random()*canvas.width;
+        this.y=Math.random()*canvas.height;
+        this.vx=(Math.random()-0.5)*0.5;
+        this.vy=(Math.random()-0.5)*0.5;
+    }
+    move(){
+        this.x+=this.vx;
+        this.y+=this.vy;
+
+        if(this.x<0||this.x>canvas.width)this.vx*=-1;
+        if(this.y<0||this.y>canvas.height)this.vy*=-1;
+    }
+    draw(){
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,2,0,Math.PI*2);
+        ctx.fillStyle="white";
+        ctx.fill();
+    }
+}
+
+let particles=[];
+for(let i=0;i<120;i++)particles.push(new Particle());
+
+function connect(){
+    for(let a=0;a<particles.length;a++){
+        for(let b=a;b<particles.length;b++){
+            let dx=particles[a].x-particles[b].x;
+            let dy=particles[a].y-particles[b].y;
+            let dist=Math.sqrt(dx*dx+dy*dy);
+
+            let mouseDist=Math.sqrt(
+                (particles[a].x-mouse.x)**2+
+                (particles[a].y-mouse.y)**2
+            );
+
+            if(dist<120 && mouseDist<170){
+                ctx.strokeStyle="rgba(255,255,255,"+(1-dist/120)+")";
+                ctx.lineWidth=1;
+                ctx.beginPath();
+                ctx.moveTo(particles[a].x,particles[a].y);
+                ctx.lineTo(particles[b].x,particles[b].y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+        p.move();
+        p.draw();
+    });
+    connect();
+    requestAnimationFrame(animate);
+}
+animate();
+</script>
 
 </body>
 </html>
