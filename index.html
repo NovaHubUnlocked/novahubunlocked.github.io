@@ -13,7 +13,6 @@ body{
     color:white;
 }
 
-/* canvas background */
 canvas{
     position:fixed;
     top:0;
@@ -21,7 +20,6 @@ canvas{
     z-index:-1;
 }
 
-/* center login box */
 .container{
     position:absolute;
     top:50%;
@@ -30,7 +28,6 @@ canvas{
     text-align:center;
 }
 
-/* glowing title */
 h1{
     font-size:60px;
     font-weight:bold;
@@ -42,7 +39,6 @@ h1{
     margin-bottom:30px;
 }
 
-/* password box */
 input{
     background:transparent;
     border:2px solid white;
@@ -55,12 +51,10 @@ input{
     text-align:center;
 }
 
-/* placeholder color */
 ::placeholder{
     color:#cccccc;
 }
 
-/* wrong password shake */
 .shake{
     animation:shake 0.3s;
 }
@@ -84,9 +78,8 @@ input{
 </div>
 
 <script>
-/* ================= PASSWORD ================= */
+// PASSWORD
 const input=document.getElementById("pass");
-
 input.addEventListener("keydown",function(e){
     if(e.key==="Enter"){
         if(input.value==="dihdihdih"){
@@ -99,26 +92,30 @@ input.addEventListener("keydown",function(e){
     }
 });
 
-/* ================= PARTICLE BACKGROUND ================= */
+// CANVAS
 const canvas=document.getElementById("bg");
 const ctx=canvas.getContext("2d");
 
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+function resize(){
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
 
-let mouse={x:0,y:0};
+let mouse={x:canvas.width/2,y:canvas.height/2};
 
 window.addEventListener("mousemove",e=>{
-    mouse.x=e.x;
-    mouse.y=e.y;
+    mouse.x=e.clientX;
+    mouse.y=e.clientY;
 });
 
 class Particle{
     constructor(){
         this.x=Math.random()*canvas.width;
         this.y=Math.random()*canvas.height;
-        this.vx=(Math.random()-0.5)*0.5;
-        this.vy=(Math.random()-0.5)*0.5;
+        this.vx=(Math.random()-0.5)*0.6;
+        this.vy=(Math.random()-0.5)*0.6;
     }
     move(){
         this.x+=this.vx;
@@ -136,39 +133,34 @@ class Particle{
 }
 
 let particles=[];
-for(let i=0;i<120;i++)particles.push(new Particle());
+for(let i=0;i<140;i++)particles.push(new Particle());
 
-function connect(){
-    for(let a=0;a<particles.length;a++){
-        for(let b=a;b<particles.length;b++){
-            let dx=particles[a].x-particles[b].x;
-            let dy=particles[a].y-particles[b].y;
-            let dist=Math.sqrt(dx*dx+dy*dy);
+function connectToMouse(){
+    for(let p of particles){
+        let dx=p.x-mouse.x;
+        let dy=p.y-mouse.y;
+        let dist=Math.sqrt(dx*dx+dy*dy);
 
-            let mouseDist=Math.sqrt(
-                (particles[a].x-mouse.x)**2+
-                (particles[a].y-mouse.y)**2
-            );
-
-            if(dist<120 && mouseDist<170){
-                ctx.strokeStyle="rgba(255,255,255,"+(1-dist/120)+")";
-                ctx.lineWidth=1;
-                ctx.beginPath();
-                ctx.moveTo(particles[a].x,particles[a].y);
-                ctx.lineTo(particles[b].x,particles[b].y);
-                ctx.stroke();
-            }
+        if(dist<160){
+            ctx.strokeStyle="rgba(255,255,255,"+(1-dist/160)+")";
+            ctx.lineWidth=1;
+            ctx.beginPath();
+            ctx.moveTo(p.x,p.y);
+            ctx.lineTo(mouse.x,mouse.y);
+            ctx.stroke();
         }
     }
 }
 
 function animate(){
     ctx.clearRect(0,0,canvas.width,canvas.height);
+
     particles.forEach(p=>{
         p.move();
         p.draw();
     });
-    connect();
+
+    connectToMouse();
     requestAnimationFrame(animate);
 }
 animate();
