@@ -1,0 +1,30 @@
+hello, yea i made this with ai cuz im too lazy to learn html and learn everything with github, maybe later tho
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+triston like dih
